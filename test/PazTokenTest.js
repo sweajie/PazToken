@@ -41,8 +41,18 @@ contract('PazToken', (accounts) => {
         }).then(assert.fail).catch((error)=>{
             assert(error.message.indexOf('revert') >= 0 , 'error message must contain revert')
             return tokenInstance.transfer.call(accounts[1] , 200000 , {from : accounts[0]})
+        }).then((res) => {
+            assert.equal(res , true , "it can transfer")
+            return tokenInstance.transfer(accounts[1] , 200000)
         }).then((transResult)=>{
-            assert.equal(transResult , true, 'it can trans token')
+
+            assert.equal(transResult.logs.length , 1 , "transfer event triggered once")
+            let log = transResult.logs[0]
+            assert.equal(log.event , "Transfer" , "Triggered event name must be Transfer")
+            assert.equal(log.args._from , accounts[0] , "from account is ok")
+            assert.equal(log.args._to , accounts[1] , "to account is ok")
+            assert.equal(log.args._value , 200000 , "transfer amount is ok")
+
             return tokenInstance.balanceOf(accounts[1])
         }).then((receiptBalance)=>{
             assert.equal(receiptBalance.toNumber() , 200000, 'Receipt Balance ok after transfer')
