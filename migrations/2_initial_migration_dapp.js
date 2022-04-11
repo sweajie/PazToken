@@ -1,5 +1,5 @@
-const DappToken = artifacts.require("DappToken");
+const PazToken = artifacts.require("PazToken");
 
 module.exports = function (deployer) {
-  deployer.deploy(DappToken);
+  deployer.deploy(PazToken , 1000000);
 };
